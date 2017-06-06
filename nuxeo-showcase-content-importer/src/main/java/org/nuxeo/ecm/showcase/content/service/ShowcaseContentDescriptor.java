@@ -19,13 +19,12 @@
 
 package org.nuxeo.ecm.showcase.content.service;
 
+import java.net.URL;
+
 import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.runtime.model.ComponentInstance;
-import org.nuxeo.runtime.model.RuntimeContext;
-
-import java.net.URL;
 
 @XObject(value = "content")
 public class ShowcaseContentDescriptor {
@@ -69,8 +68,6 @@ public class ShowcaseContentDescriptor {
     }
 
     public void computeBlobUrl(ComponentInstance component) {
-        try (RuntimeContext ctx = component.getRuntimeContext()) {
-            setBlobUrl(ctx.getResource(filename));
-        }
+        setBlobUrl(component.getRuntimeContext().getResource(filename));
     }
 }
