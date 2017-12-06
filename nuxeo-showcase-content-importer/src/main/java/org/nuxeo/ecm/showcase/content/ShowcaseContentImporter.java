@@ -142,7 +142,7 @@ public class ShowcaseContentImporter {
     }
 
     protected void markImportDone() {
-        AuditLogger logger = Framework.getLocalService(AuditLogger.class);
+        AuditLogger logger = Framework.getService(AuditLogger.class);
         LogEntry entry = logger.newLogEntry();
         entry.setEventId(getEventName());
         entry.setEventDate(Calendar.getInstance().getTime());

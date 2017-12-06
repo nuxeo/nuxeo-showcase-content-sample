@@ -70,7 +70,7 @@ public class ShowcaseVideoImportedListener implements PostCommitEventListener {
             // only trigger the event if we really have a video
             if (video != null) {
                 Event trigger = ctx.newEvent(VIDEO_CHANGED_EVENT);
-                EventService eventService = Framework.getLocalService(EventService.class);
+                EventService eventService = Framework.getService(EventService.class);
                 eventService.fireEvent(trigger);
             }
         }
