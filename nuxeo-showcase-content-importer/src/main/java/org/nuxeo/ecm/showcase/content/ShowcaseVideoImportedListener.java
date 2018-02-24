@@ -21,7 +21,6 @@ package org.nuxeo.ecm.showcase.content;
 
 import static org.nuxeo.ecm.core.api.event.DocumentEventTypes.DOCUMENT_IMPORTED;
 import static org.nuxeo.ecm.platform.video.VideoConstants.HAS_VIDEO_PREVIEW_FACET;
-import static org.nuxeo.ecm.platform.video.VideoConstants.VIDEO_CHANGED_EVENT;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,10 +30,11 @@ import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.model.Property;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventBundle;
-import org.nuxeo.ecm.core.event.EventService;
 import org.nuxeo.ecm.core.event.PostCommitEventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
+import org.nuxeo.ecm.core.work.api.WorkManager;
 import org.nuxeo.ecm.platform.video.VideoHelper;
+import org.nuxeo.ecm.platform.video.service.VideoInfoWork;
 import org.nuxeo.runtime.api.Framework;
 
 /**
@@ -69,9 +69,7 @@ public class ShowcaseVideoImportedListener implements PostCommitEventListener {
 
             // only trigger the event if we really have a video
             if (video != null) {
-                Event trigger = ctx.newEvent(VIDEO_CHANGED_EVENT);
-                EventService eventService = Framework.getService(EventService.class);
-                eventService.fireEvent(trigger);
+                scheduleAsyncProcessing(doc);
             }
         }
     }
@@ -84,5 +82,12 @@ public class ShowcaseVideoImportedListener implements PostCommitEventListener {
             log.error(String.format("Unable to retrieve video info: %s", e.getMessage()));
             log.debug(e, e);
         }
+    }
+
+    protected void scheduleAsyncProcessing(DocumentModel doc) {
+        WorkManager workManager = Framework.getService(WorkManager.class);
+        VideoInfoWork work = new VideoInfoWork(doc.getRepositoryName(), doc.getId());
+        log.debug(String.format("Scheduling work: video info of document %s.", doc));
+        workManager.schedule(work, true);
     }
 }
