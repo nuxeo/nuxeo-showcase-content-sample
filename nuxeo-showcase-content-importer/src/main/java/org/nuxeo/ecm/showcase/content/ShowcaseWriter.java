@@ -34,10 +34,10 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.impl.DocumentModelImpl;
 import org.nuxeo.ecm.core.api.validation.DocumentValidationService;
+import org.nuxeo.ecm.core.api.versioning.VersioningService;
 import org.nuxeo.ecm.core.io.ExportConstants;
 import org.nuxeo.ecm.core.io.ExportedDocument;
 import org.nuxeo.ecm.core.io.impl.plugins.DocumentModelWriter;
-import org.nuxeo.ecm.core.versioning.VersioningService;
 
 /**
  * @author <a href="mailto:ak@nuxeo.com">Arnaud Kervern</a>
