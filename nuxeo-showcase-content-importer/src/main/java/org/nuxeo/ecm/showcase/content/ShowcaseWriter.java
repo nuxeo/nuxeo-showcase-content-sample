@@ -27,8 +27,6 @@ import static org.nuxeo.ecm.platform.video.VideoConstants.VIDEO_FACET;
 
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.nuxeo.common.utils.Path;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -47,8 +45,6 @@ import org.nuxeo.ecm.core.versioning.VersioningService;
  */
 public class ShowcaseWriter extends DocumentModelWriter {
 
-    private static final Log log = LogFactory.getLog(ShowcaseWriter.class);
-
     public ShowcaseWriter(CoreSession session, String parentPath, int saveInterval) {
         super(session, parentPath, saveInterval);
     }
@@ -63,7 +59,6 @@ public class ShowcaseWriter extends DocumentModelWriter {
      */
     protected DocumentModel createDocument(ExportedDocument xdoc, Path toPath) {
         Path parentPath = toPath.removeLastSegments(1);
-        String name = toPath.lastSegment();
 
         DocumentModel doc = new DocumentModelImpl(null, xdoc.getType(), xdoc.getId(), toPath, null, null,
                 new PathRef(parentPath.toString()), null, null, null, null);
