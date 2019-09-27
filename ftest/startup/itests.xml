@@ -11,12 +11,12 @@
 
   <!-- Instruction for installing the MP to be tested -->
   <property name="mp.install"
-            value="file:${out.dir}/marketplace-${marketplace.dam.version}.zip,
+            value="file:${out.dir}/nuxeo-dam-package-${nuxeo.platform.version}.zip,
     file:${out.dir}/nuxeo-showcase-content-package-${maven.project.version}.zip" />
   <!-- Override default prepare-environment target to make it download your MP -->
   <target name="prepare-environment" depends="_init,prepare-db,prepare-tomcat">
     <copy todir="${out.dir}">
-      <artifact:file key="org.nuxeo.marketplace.dam:marketplace::zip" />
+      <artifact:file key="org.nuxeo.packages:nuxeo-dam-package::zip" />
       <artifact:file key="org.nuxeo.ecm.platform:nuxeo-showcase-content-package::zip" />
     </copy>
   </target>
