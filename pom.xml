@@ -25,36 +25,6 @@
         <module>ftest/startup</module>
       </modules>
     </profile>
-    <profile>
-      <!-- For use by Nuxeo internal QA -->
-      <id>qa</id>
-      <repositories>
-        <repository>
-          <id>maven-internal</id>
-          <url>https://packages.nuxeo.com/repository/maven-internal/</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-          </snapshots>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>maven-internal</id>
-          <url>https://packages.nuxeo.com/repository/maven-internal/</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <updatePolicy>always</updatePolicy>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
   </profiles>
 
   <properties>
@@ -98,8 +68,19 @@
         <enabled>true</enabled>
       </releases>
       <snapshots>
-        <updatePolicy>always</updatePolicy>
         <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>maven-internal</id>
+      <url>https://packages.nuxeo.com/repository/maven-internal/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
