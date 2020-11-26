@@ -25,8 +25,7 @@ import com.google.inject.Inject;
 @RepositoryConfig(cleanup = Granularity.METHOD)
 @Deploy("org.nuxeo.ecm.content.showcase")
 @Deploy("org.nuxeo.ecm.platform.thumbnail")
-@Deploy("org.nuxeo.ecm.platform.filemanager.api")
-@Deploy("org.nuxeo.ecm.platform.filemanager.core")
+@Deploy("org.nuxeo.ecm.platform.filemanager")
 @Deploy("org.nuxeo.ecm.platform.collections.core")
 @Deploy("org.nuxeo.ecm.content.showcase:contrib.xml")
 public class TestShowcaseContentService {
