@@ -21,6 +21,9 @@ package org.nuxeo.ecm.showcase.content;
 
 import static org.nuxeo.ecm.core.api.event.DocumentEventTypes.DOCUMENT_IMPORTED;
 import static org.nuxeo.ecm.platform.video.VideoConstants.HAS_VIDEO_PREVIEW_FACET;
+import static org.nuxeo.ecm.platform.video.VideoConstants.TRANSCODED_VIDEOS_PROPERTY;
+
+import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,26 +65,24 @@ public class ShowcaseVideoImportedListener implements PostCommitEventListener {
         DocumentEventContext ctx = (DocumentEventContext) event.getContext();
         DocumentModel doc = ctx.getSourceDocument();
         if (doc.hasFacet(HAS_VIDEO_PREVIEW_FACET) && !doc.isProxy()) {
-            Property origVideoProperty = doc.getProperty("file:content");
-
-            Blob video = (Blob) origVideoProperty.getValue();
-            updateVideoInfo(doc, video);
-
-            // only trigger the event if we really have a video
-            if (video != null) {
-                scheduleAsyncProcessing(doc);
+            try {
+                resetProperties(doc);
+                doc.putContextData("disableVideoConversionsGenerationListener", true);
+                doc = ctx.getCoreSession().saveDocument(doc);
+            } catch (IOException e) {
+                throw new NuxeoException(
+                        String.format("Error while resetting video properties of document %s.", doc), e);
             }
+            scheduleAsyncProcessing(doc);
         }
     }
 
-    protected void updateVideoInfo(DocumentModel doc, Blob video) {
-        try {
-            VideoHelper.updateVideoInfo(doc, video);
-        } catch (NuxeoException e) {
-            // may happen if ffmpeg is not installed
-            log.error(String.format("Unable to retrieve video info: %s", e.getMessage()));
-            log.debug(e, e);
-        }
+    protected void resetProperties(DocumentModel doc) throws IOException {
+        log.debug(String.format("Resetting video info, storyboard, previews and conversions of document %s", doc));
+        VideoHelper.updateVideoInfo(doc, null);
+        VideoHelper.updateStoryboard(doc, null);
+        VideoHelper.updatePreviews(doc, null);
+        doc.setPropertyValue(TRANSCODED_VIDEOS_PROPERTY, null);
     }
 
     protected void scheduleAsyncProcessing(DocumentModel doc) {
