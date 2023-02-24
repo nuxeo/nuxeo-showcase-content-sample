@@ -11,9 +11,10 @@
   <nuxeo-validation>nuxeo_certified</nuxeo-validation>
   <production-state>production_ready</production-state>
   <supported>true</supported>
-  <platforms>
-    <platform>@DISTRIBUTION_NAME@-@NUXEO_TARGET_VERSION@</platform>
-  </platforms>
+  <target-platform>
+    <name>@DISTRIBUTION_NAME@</name>
+    <version>[@NUXEO_PLATFORM_VERSION@,2024.0)</version>
+  </target-platform>
   <license>LGPL 2.1</license>
   <license-url>http://www.gnu.org/licenses/lgpl-2.1.html</license-url>
   <visibility>PUBLIC</visibility>
