@@ -13,7 +13,7 @@
   <supported>true</supported>
   <target-platform>
     <name>@DISTRIBUTION_NAME@</name>
-    <version>[@NUXEO_PLATFORM_VERSION@,2024.0)</version>
+    <version>[@NUXEO_PLATFORM_VERSION@,2026.0)</version>
   </target-platform>
   <license>LGPL 2.1</license>
   <license-url>http://www.gnu.org/licenses/lgpl-2.1.html</license-url>
