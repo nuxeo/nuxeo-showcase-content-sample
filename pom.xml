@@ -9,7 +9,7 @@
   <groupId>org.nuxeo.ecm.platform</groupId>
   <artifactId>nuxeo-showcase-content-parent</artifactId>
   <name>Nuxeo Showcase Content - Parent POM</name>
-  <version>2025.0.1-SNAPSHOT</version>
+  <version>2025.0.1</version>
   <packaging>pom</packaging>
 
   <modules>
