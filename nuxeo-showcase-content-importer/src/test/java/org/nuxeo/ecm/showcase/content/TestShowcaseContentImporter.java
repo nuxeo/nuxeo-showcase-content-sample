@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and others.
+ * (C) Copyright 2015-2024 Nuxeo (http://nuxeo.com/) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,39 @@
  * Contributors:
  *     Nuxeo
  */
-
 package org.nuxeo.ecm.showcase.content;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.nuxeo.ecm.showcase.content.service.TestShowcaseContentService.DOC_ID;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
+
+import jakarta.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.audit.test.AuditFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.impl.blob.URLBlob;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
-import org.nuxeo.ecm.platform.audit.AuditFeature;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
-
-import com.google.inject.Inject;
+import org.nuxeo.runtime.test.runner.TransactionalFeature;
 
 /**
  * @author <a href="mailto:ak@nuxeo.com">Arnaud Kervern</a>
  * @since 7.10
  */
 @RunWith(FeaturesRunner.class)
-@Features({ PlatformFeature.class, AuditFeature.class })
+@Features({ AuditFeature.class, PlatformFeature.class })
 @RepositoryConfig(cleanup = Granularity.METHOD)
 @Deploy("org.nuxeo.ecm.content.showcase")
 @Deploy("org.nuxeo.ecm.platform.thumbnail")
@@ -56,10 +57,13 @@ import com.google.inject.Inject;
 public class TestShowcaseContentImporter {
 
     @Inject
-    CoreSession session;
+    protected CoreSession session;
+
+    @Inject
+    protected TransactionalFeature txFeature;
 
     @Test
-    public void testImportFile() throws IOException, URISyntaxException {
+    public void testImportFile() throws IOException {
         DocumentModelList documentModels = session.query("Select * from Document");
         int docsSize = documentModels.size();
 
@@ -71,7 +75,10 @@ public class TestShowcaseContentImporter {
         assertFalse(importer.isImported());
         importer.create(new URLBlob(resource));
 
-        // assertTrue(importer.isImported());
+        // wait for audit
+        txFeature.nextTransaction();
+
+        assertTrue(importer.isImported());
         assertNotEquals(docsSize, session.query("select * from Document").size());
 
         DocumentModelList docs = session.query("select * from File");
