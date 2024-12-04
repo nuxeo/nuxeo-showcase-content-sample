@@ -53,10 +53,13 @@ Then build the Marketplace Package:
 mvn clean install -DskipTests
 ```
 
-Then upload the marketplace to connect:
+Then upload the marketplace to Connect and NOS Preprod:
 
 ```
 curl --fail -su USERNAME -F package=@nuxeo-showcase-content-package/target/nuxeo-showcase-content-package-2025.0.2.zip 'https://connect.nuxeo.com/nuxeo/site/marketplace/upload?batch=true'
+```
+```
+curl --fail -su USERNAME -F package=@nuxeo-showcase-content-package/target/nuxeo-showcase-content-package-2025.0.2.zip 'https://nos-preprod-connect.nuxeocloud.com/nuxeo/site/marketplace/upload?batch=true'
 ```
 
 > [!IMPORTANT]
