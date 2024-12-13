@@ -19,20 +19,15 @@
 
 package org.nuxeo.ecm.showcase.content.service;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.impl.blob.URLBlob;
 import org.nuxeo.ecm.showcase.content.ShowcaseContentImporter;
-import org.nuxeo.runtime.model.ComponentInstance;
-import org.nuxeo.runtime.model.ContributionFragmentRegistry;
 import org.nuxeo.runtime.model.DefaultComponent;
-import org.nuxeo.runtime.model.SimpleContributionRegistry;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @since 8.4
@@ -43,37 +38,11 @@ public class ShowcaseContentServiceImpl extends DefaultComponent implements Show
 
     public static final String EP_CONTENTS = "contents";
 
-    private ContributionFragmentRegistry<ShowcaseContentDescriptor> registry = new ShowcaseContentDescriptorSimpleContributionRegistry();
-
-    private static class ShowcaseContentDescriptorSimpleContributionRegistry
-            extends SimpleContributionRegistry<ShowcaseContentDescriptor> {
-        @Override
-        public String getContributionId(ShowcaseContentDescriptor contrib) {
-            return contrib.getName();
-        }
-    }
-
-    @Override
-    public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
-        if (EP_CONTENTS.equals(extensionPoint)) {
-            ShowcaseContentDescriptor content = (ShowcaseContentDescriptor) contribution;
-            content.computeBlobUrl(contributor);
-            registry.addContribution(content);
-        }
-    }
-
-    @Override
-    public void unregisterContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
-        if (EP_CONTENTS.equals(extensionPoint)) {
-            registry.removeContribution((ShowcaseContentDescriptor) contribution);
-        }
-    }
-
     @Override
     public void triggerImporters(CoreSession session) {
         getContributions().forEach(c -> {
             // XXX Should use a dedicated Worker...
-            URLBlob blob = new URLBlob(c.blobUrl);
+            URLBlob blob = new URLBlob(c.getBlobUrl());
             try {
                 ShowcaseContentImporter.run(session, c.getName(), blob);
             } catch (IOException e) {
@@ -83,9 +52,9 @@ public class ShowcaseContentServiceImpl extends DefaultComponent implements Show
     }
 
     protected List<ShowcaseContentDescriptor> getContributions() {
-        return Arrays.stream(registry.getFragments())
-                     .map(f -> f.object)
-                     .filter(c -> c.enabled)
-                     .collect(Collectors.toList());
+        return this.<ShowcaseContentDescriptor> getDescriptors(EP_CONTENTS)
+                   .stream()
+                   .filter(ShowcaseContentDescriptor::isEnabled)
+                   .toList();
     }
 }

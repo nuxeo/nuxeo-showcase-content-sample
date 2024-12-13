@@ -19,15 +19,21 @@
 
 package org.nuxeo.ecm.showcase.content.service;
 
+import static org.nuxeo.runtime.model.XContextValues.CONTRIBUTING_COMPONENT;
+
 import java.net.URL;
 
+import org.nuxeo.common.xmap.annotation.XContext;
 import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XObject;
-import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.runtime.model.ComponentInstance;
+import org.nuxeo.runtime.model.Descriptor;
 
 @XObject(value = "content")
-public class ShowcaseContentDescriptor {
+public class ShowcaseContentDescriptor implements Descriptor {
+
+    @XContext(CONTRIBUTING_COMPONENT)
+    protected ComponentInstance contributingComponent;
 
     @XNode("@name")
     protected String name;
@@ -39,6 +45,11 @@ public class ShowcaseContentDescriptor {
     protected boolean enabled = true;
 
     protected URL blobUrl;
+
+    @Override
+    public String getId() {
+        return getName();
+    }
 
     public String getName() {
         return name;
@@ -56,18 +67,15 @@ public class ShowcaseContentDescriptor {
         this.filename = filename;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
     public URL getBlobUrl() {
         if (blobUrl == null) {
-            throw new NuxeoException("Unable to find expected file: " + filename);
+            blobUrl = contributingComponent.getRuntimeContext().getResource(filename);
         }
         return blobUrl;
     }
 
-    public void setBlobUrl(URL blobUrl) {
-        this.blobUrl = blobUrl;
-    }
-
-    public void computeBlobUrl(ComponentInstance component) {
-        setBlobUrl(component.getRuntimeContext().getResource(filename));
-    }
 }
